@@ -38,9 +38,16 @@ d3.csv("assets/data/data.csv").then(function (data) {
     data.forEach(function (data) {
         data.poverty = +data.poverty;
         data.healthcare = +data.healthcare;
+        data.age = +data.age;
+        data.obesity = +data.obesity;
+        data.income = +data.income;
+        data.smokes = +data.smokes;
+        data.stateabbr = data.abbr;
     });
 
-    // Step 2: Create scale functions
+    console.log(data.smokes);
+
+        // Step 2: Create scale functions
     // ==============================
     var xScale = d3.scaleLinear()
         .domain(d3.extent(data, d => d.poverty)).nice()
@@ -54,9 +61,6 @@ d3.csv("assets/data/data.csv").then(function (data) {
     // ==============================
     var bottomAxis = d3.axisBottom(xScale);
     var leftAxis = d3.axisLeft(yScale);
-
-
-
 
     // Step 4: Append Axes to the chart
     // ==============================
@@ -78,8 +82,35 @@ d3.csv("assets/data/data.csv").then(function (data) {
         .attr("cx", d => xScale(d.poverty))
         .attr("cy", d => yScale(d.healthcare))
         .attr("r", "15")
-        .attr("fill", "pink")
-        .attr("opacity", ".5");
+        .attr("fill", "lightseagreen")
+        .attr("opacity", ".5")
+        ;
+
+    var circlestext = chartGroup.selectAll("label")
+        .data(data)
+        .enter()
+        .append("text")
+        .attr("x", d => xScale(d.poverty))
+        .attr("y", d => yScale(d.healthcare))
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "central")
+        .text(d => d.stateabbr);
+
+    //     const label = svg.append("g")
+    //   .attr("font-family", "Yanone Kaffeesatz")
+    //   .attr("font-weight", 700)
+    //   .attr("text-anchor", "middle")
+    // .selectAll("text")
+    // .data(data)
+    // .join("text")
+    //   .attr("id", "isoCode")
+    //   .attr("opacity", 0)
+    //   .attr("dy", "0.35em")
+    //   .attr("x", d => xScale(d.poverty))
+    //   .attr("y", d => yScale(d.healthcare))
+    // //   .attr("font-size", d => r(d.population)*1.5)
+    // //   .attr("fill", d => color(d.population))
+    //   .text(d => d.stateabbr);
 
 
 }).catch(function (error) {
