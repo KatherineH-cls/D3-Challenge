@@ -27,6 +27,55 @@ var chartGroup = svg.append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 
+
+// Functions for Interactivity
+// ==============================
+
+// xAxis interactive changes
+
+// function used for updating x-scale var upon click on axis label
+// function xScale(data, chosenXAxis) {
+//     var xLinearScale = d3.scaleLinear()
+//         .domain((d3.extent(data, d => d[chosenXAxis])))
+//         .range([0, chartWidth]);
+//     return xLinearScale;
+// }
+
+// function used for updating xAxis var upon click on axis label
+// function renderAxesX(newXScale, xAxis) {
+//     var bottomAxis = d3.axisBottom(newXScale);
+//     xAxis.transition()
+//         .duration(1000)
+//         .call(bottomAxis);
+//     return xAxis;
+// }
+
+// yAxis interactive changes
+
+// function used for updating y-scale var upon click on axis label
+// function yScale(data, chosenYAxis) {
+//     var yLinearScale = d3.scaleLinear()
+//         .domain(d3.extent(data, d => d[chosenYAxis])).nice()
+//         .range([chartHeight, 0]);
+//     return yLinearScale;
+// }
+
+// function used for updating yAxis var upon click on axis label
+// function renderAxesX(newYScale, yAxis) {
+//     var leftAxis = d3.axisLeft(newYScale);
+//     yAxis.transition()
+//         .duration(1000)
+//         .call(leftAxis);
+//     return yAxis;
+// }
+
+// Fetch data and draw the graph
+// ==============================
+
+// Initial Params
+var chosenXAxis = "poverty";
+var chosenYAxis = "obese";
+
 // Load data from data.csv
 d3.csv("assets/data/data.csv").then(function (data) {
 
@@ -46,16 +95,18 @@ d3.csv("assets/data/data.csv").then(function (data) {
     });
 
 
-
     // Step 2: Create scale functions
     // ==============================
     var xScale = d3.scaleLinear()
         .domain(d3.extent(data, d => d.poverty)).nice()
         .range([0, chartWidth])
 
-    var yScale = d3.scaleLinear()
-        .domain(d3.extent(data, d => d.healthcare)).nice()
-        .range([chartHeight, 0])
+    var yScale= d3.scaleLinear()
+            .domain(d3.extent(data, d => d.obese)).nice()
+            .range([chartHeight, 0])
+
+            console.log(xScale);
+            console.log(yScale);
 
     // Step 3: Create axis functions
     // ==============================
@@ -64,11 +115,11 @@ d3.csv("assets/data/data.csv").then(function (data) {
 
     // Step 4: Append Axes to the chart
     // ==============================
-    chartGroup.append("g")
+    var xAxis = chartGroup.append("g")
         .classed("axis", true)
         .call(leftAxis);
 
-    chartGroup.append("g")
+    var yaxis = chartGroup.append("g")
         .classed("axis", true)
         .attr("transform", "translate(0, " + chartHeight + ")")
         .call(bottomAxis);
@@ -102,9 +153,7 @@ d3.csv("assets/data/data.csv").then(function (data) {
     // Add yaxis labels to the chart
     // ==============================
     var ylabelsGroup = chartGroup.append("g")
-        .attr("transform", "rotate(-90)")
-        .attr("x", -chartHeight / 2)
-        ;
+        .attr("transform", "rotate(-90)");
 
     var obeseLabel = ylabelsGroup.append("text")
         .attr("x", -chartHeight / 2)
@@ -140,12 +189,12 @@ d3.csv("assets/data/data.csv").then(function (data) {
         .attr("opacity", ".5")
         ;
 
-    // add state labels to circles
+    // add state labels to circles 
     var circlestext = chartGroup.selectAll(".st_label")
         .data(data)
         .enter()
         .append("text")
-        .style("font-size", "10px")
+        .style("font", "10px times")
         .attr("x", d => xScale(d.poverty))
         .attr("y", d => yScale(d.healthcare))
         .attr("text-anchor", "middle")
@@ -153,21 +202,6 @@ d3.csv("assets/data/data.csv").then(function (data) {
         .attr("fill", "azure")
         .text(d => d.stateabbr);
 
-    //     const label = svg.append("g")
-    //   .attr("font-family", "Yanone Kaffeesatz")
-    //   .attr("font-weight", 700)
-    //   .attr("text-anchor", "middle")
-    // .selectAll("text")
-    // .data(data)
-    // .join("text")
-    //   .attr("id", "isoCode")
-    //   .attr("opacity", 0)
-    //   .attr("dy", "0.35em")
-    //   .attr("x", d => xScale(d.poverty))
-    //   .attr("y", d => yScale(d.healthcare))
-    // //   .attr("font-size", d => r(d.population)*1.5)
-    // //   .attr("fill", d => color(d.population))
-    //   .text(d => d.stateabbr);
 
 
 }).catch(function (error) {
