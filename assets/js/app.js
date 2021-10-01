@@ -36,8 +36,8 @@ var chartGroup = svg.append("g")
 // function used for updating x-scale var upon click on axis label
 function xLinearScale(data, chosenXAxis) {
     var xscale = d3.scaleLinear()
-.domain(d3.extent(data, d => d[chosenXAxis])).nice()
-.range([0, chartWidth]);
+        .domain(d3.extent(data, d => d[chosenXAxis])).nice()
+        .range([0, chartWidth]);
     return xscale;
 }
 
@@ -55,13 +55,13 @@ function renderAxesX(newXScale, xAxis) {
 // function used for updating y-scale var upon click on axis label
 function yLinearScale(data, chosenYAxis) {
     var yscale = d3.scaleLinear()
-    .domain(d3.extent(data, d => d[chosenYAxis])).nice()
-    .range([chartHeight, 0]);
+        .domain(d3.extent(data, d => d[chosenYAxis])).nice()
+        .range([chartHeight, 0]);
     return yscale;
 }
 
 // function used for updating yAxis var upon click on axis label
-function renderAxesX(newYScale, yAxis) {
+function renderAxesY(newYScale, yAxis) {
     var leftAxis = d3.axisLeft(newYScale);
     yAxis.transition()
         .duration(1000)
@@ -94,8 +94,6 @@ d3.csv("assets/data/data.csv").then(function (data) {
         data.stateabbr = data.abbr;
     });
 
-
-
     // Step 2: Create scale functions
     // ==============================
     var xScale = xLinearScale(data, chosenXAxis);
@@ -109,14 +107,14 @@ d3.csv("assets/data/data.csv").then(function (data) {
 
     // Step 4: Append Axes to the chart
     // ==============================
-    chartGroup.append("g")
-        .classed("axis", true)
-        .call(leftAxis);
-
-    chartGroup.append("g")
+    var xAxis = chartGroup.append("g")
         .classed("axis", true)
         .attr("transform", "translate(0, " + chartHeight + ")")
         .call(bottomAxis);
+
+    var yAxis = chartGroup.append("g")
+        .classed("axis", true)
+        .call(leftAxis);
 
     // Add xaxis labels to the chart
     // ==============================
@@ -198,7 +196,43 @@ d3.csv("assets/data/data.csv").then(function (data) {
         .attr("fill", "azure")
         .text(d => d.stateabbr);
 
+    // x axis labels event listener
+    xlabelsGroup.selectAll("text")
+        .on("click", function () {
+            // get value of selection
+            var value = d3.select(this).attr("value");
+            if (value !== chosenXAxis) {
+                // replaces chosenXAxis with value
+                chosenXAxis = value;
+                console.log(chosenXAxis)
+                // updates x scale for new data
+                xScale = xLinearScale(data, chosenXAxis);
+                // updates x axis with transition
+                xAxis = renderAxesX(xScale, xAxis);
+                // updates circles with new x values
+                // circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis);
+                // updates tooltips with new info
+                // circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
+                // changes classes to change bold text
+                // if (chosenXAxis === "num_albums") {
+                //   albumsLabel
+                //     .classed("active", true)
+                //     .classed("inactive", false);
+                //   hairLengthLabel
+                //     .classed("active", false)
+                //     .classed("inactive", true);
+                // }
+                // else {
+                //   albumsLabel
+                //     .classed("active", false)
+                //     .classed("inactive", true);
+                //   hairLengthLabel
+                //     .classed("active", true)
+                //     .classed("inactive", false);
+                // }
+            }
+        });
 
 }).catch(function (error) {
     console.log(error);
