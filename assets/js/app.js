@@ -27,6 +27,55 @@ var chartGroup = svg.append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 
+
+// Functions for Interactivity
+// ==============================
+
+// xAxis interactive changes
+
+// function used for updating x-scale var upon click on axis label
+// function xScale(data, chosenXAxis) {
+//     var xLinearScale = d3.scaleLinear()
+//         .domain((d3.extent(data, d => d[chosenXAxis])))
+//         .range([0, chartWidth]);
+//     return xLinearScale;
+// }
+
+// function used for updating xAxis var upon click on axis label
+// function renderAxesX(newXScale, xAxis) {
+//     var bottomAxis = d3.axisBottom(newXScale);
+//     xAxis.transition()
+//         .duration(1000)
+//         .call(bottomAxis);
+//     return xAxis;
+// }
+
+// yAxis interactive changes
+
+// function used for updating y-scale var upon click on axis label
+// function yScale(data, chosenYAxis) {
+//     var yLinearScale = d3.scaleLinear()
+//         .domain(d3.extent(data, d => d[chosenYAxis])).nice()
+//         .range([chartHeight, 0]);
+//     return yLinearScale;
+// }
+
+// function used for updating yAxis var upon click on axis label
+// function renderAxesX(newYScale, yAxis) {
+//     var leftAxis = d3.axisLeft(newYScale);
+//     yAxis.transition()
+//         .duration(1000)
+//         .call(leftAxis);
+//     return yAxis;
+// }
+
+// Fetch data and draw the graph
+// ==============================
+
+// Initial Params
+var chosenXAxis = "poverty";
+var chosenYAxis = "healthcare";
+
 // Load data from data.csv
 d3.csv("assets/data/data.csv").then(function (data) {
 
@@ -50,11 +99,11 @@ d3.csv("assets/data/data.csv").then(function (data) {
     // Step 2: Create scale functions
     // ==============================
     var xScale = d3.scaleLinear()
-        .domain(d3.extent(data, d => d.poverty)).nice()
+        .domain(d3.extent(data, d => d[chosenXAxis])).nice()
         .range([0, chartWidth])
 
     var yScale = d3.scaleLinear()
-        .domain(d3.extent(data, d => d.healthcare)).nice()
+        .domain(d3.extent(data, d => d[chosenYAxis])).nice()
         .range([chartHeight, 0])
 
     // Step 3: Create axis functions
@@ -109,7 +158,7 @@ d3.csv("assets/data/data.csv").then(function (data) {
     var obeseLabel = ylabelsGroup.append("text")
         .attr("x", -chartHeight / 2)
         .attr("y", -70)
-        .attr("value", "obese") // value to grab for event listener
+        .attr("value", "obesity") // value to grab for event listener
         .classed("active", true)
         .text("Obese (%)");
 
@@ -153,21 +202,6 @@ d3.csv("assets/data/data.csv").then(function (data) {
         .attr("fill", "azure")
         .text(d => d.stateabbr);
 
-    //     const label = svg.append("g")
-    //   .attr("font-family", "Yanone Kaffeesatz")
-    //   .attr("font-weight", 700)
-    //   .attr("text-anchor", "middle")
-    // .selectAll("text")
-    // .data(data)
-    // .join("text")
-    //   .attr("id", "isoCode")
-    //   .attr("opacity", 0)
-    //   .attr("dy", "0.35em")
-    //   .attr("x", d => xScale(d.poverty))
-    //   .attr("y", d => yScale(d.healthcare))
-    // //   .attr("font-size", d => r(d.population)*1.5)
-    // //   .attr("fill", d => color(d.population))
-    //   .text(d => d.stateabbr);
 
 
 }).catch(function (error) {
