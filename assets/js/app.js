@@ -1,4 +1,13 @@
 // @TODO: YOUR CODE HERE!
+function makeResponsive() {
+
+    // if the SVG area isn't empty when the browser loads,
+    // remove it and replace it with a resized version of the chart
+  var svgArea = d3.select("body").select("svg");
+
+  if (!svgArea.empty()) {
+    svgArea.remove();
+  }
 
 // Define SVG area dimensions
 var svgWidth = parseInt(d3.select("#scatter").style("width"), 10);
@@ -265,8 +274,9 @@ d3.csv("assets/data/data.csv").then(function (data) {
         .attr("x", (chartWidth / 2))
         .attr("y", 0 - (margin.top / 2))
         .attr("text-anchor", "middle")
-        .style("font-size", "20px")
-        .text("Relationship between social factors and health outcomes, by State (2014)");
+        .style("font-size", "14px")
+        .text("Relationship between social factors and health outcomes, by State (2014)")
+        ;
 
     // Step 5: Create Circles
     // ==============================
@@ -424,3 +434,10 @@ d3.csv("assets/data/data.csv").then(function (data) {
     console.log(error);
 });
 
+}
+
+makeResponsive();
+
+// Event listener for window resize.
+// When the browser window is resized, makeResponsive() is called.
+d3.select(window).on("resize", makeResponsive);
