@@ -120,7 +120,12 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 
     var toolTip = d3.tip()
         .attr("class", "tooltip")
-        .offset([80, -60])
+        .offset([-10, -60])
+        .style("background-color", "white")
+        .style("border", "solid")
+        .style("border-width", "1px")
+        .style("border-radius", "5px")
+        .style("padding", "10px")
         .html(function (d) {
             return (`${d.state}
             <br>${xlabel} ${d[chosenXAxis]}
@@ -129,12 +134,24 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 
     circlesGroup.call(toolTip);
 
-    circlesGroup.on("mouseover", function(data) {
+    circlesGroup.on("mouseover", function (data) {
         toolTip.show(data);
-      })
+        d3.select(this)
+        .transition()
+            .duration(300)
+            .attr("fill", "teal")
+            .attr("r", "15")
+            .style("stroke", "black");
+    })
         // onmouseout event
-        .on("mouseout", function(data, index) {
-          toolTip.hide(data);
+        .on("mouseout", function (data) {
+            toolTip.hide(data);
+            d3.select(this)
+            .transition()
+            .duration(300)
+                .attr("fill", "lightseagreen")
+                .attr("r", "10")
+                .style("stroke", "none");
         });
 
     return circlesGroup;
@@ -268,18 +285,8 @@ d3.csv("assets/data/data.csv").then(function (data) {
         .attr("fill", "azure")
         .text(d => d.stateabbr);
 
-    // add tool tips to chart
-    // ==============================
-    // tip = d3.tip().attr('class', 'd3-tip').html(function(d) { return d; });
-    // circlesGroup.call(tip);
-    // circlesGroup.selectAll("circles")
-    //     .data(data)
-    //     .enter()
-        // .on("mouseover", tip.show)
-        // .on("mouseout", tip.hide)
-
-        // updateToolTip function above csv import
-  var circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+    // updateToolTip function above csv import
+    var circlesText = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
     // x axis labels event listener
     xlabelsGroup.selectAll("text")
@@ -302,7 +309,7 @@ d3.csv("assets/data/data.csv").then(function (data) {
                     xScale, chosenXAxis,
                     yScale, chosenYAxis);
                 // updates tooltips with new info
-                // circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+                circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
                 // changes classes to change bold text
                 if (chosenXAxis === "poverty") {
@@ -365,7 +372,7 @@ d3.csv("assets/data/data.csv").then(function (data) {
                     xScale, chosenXAxis,
                     yScale, chosenYAxis);
                 // updates tooltips with new info
-                // circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+                circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
                 // changes classes to change bold text
                 if (chosenYAxis === "obesity") {
