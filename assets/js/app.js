@@ -1,8 +1,8 @@
 // @TODO: YOUR CODE HERE!
 
 // Define SVG area dimensions
-var svgWidth = 960;
-var svgHeight = 500;
+var svgWidth = parseInt(d3.select("#scatter").style("width"), 10);
+var svgHeight = svgWidth * 0.6;
 
 // Define the chart's margins as an object
 var margin = {
@@ -127,7 +127,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
         .style("border-radius", "5px")
         .style("padding", "10px")
         .html(function (d) {
-            return (`${d.state}
+            return (`<strong>${d.state}</strong>
             <br>${xlabel} ${d[chosenXAxis]}
             <br>${ylabel} ${d[chosenYAxis]} %`);
         });
@@ -137,7 +137,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
     circlesGroup.on("mouseover", function (data) {
         toolTip.show(data);
         d3.select(this)
-        .transition()
+            .transition()
             .duration(300)
             .attr("fill", "teal")
             .attr("r", "15")
@@ -147,8 +147,8 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
         .on("mouseout", function (data) {
             toolTip.hide(data);
             d3.select(this)
-            .transition()
-            .duration(300)
+                .transition()
+                .duration(300)
                 .attr("fill", "lightseagreen")
                 .attr("r", "10")
                 .style("stroke", "none");
@@ -259,6 +259,15 @@ d3.csv("assets/data/data.csv").then(function (data) {
         .classed("active", true)
         .text("Lacks Healthcare (%)");
 
+    // Add title to the chart
+    // ==============================
+    chartGroup.append("text")
+        .attr("x", (chartWidth / 2))
+        .attr("y", 0 - (margin.top / 2))
+        .attr("text-anchor", "middle")
+        .style("font-size", "20px")
+        .text("Relationship between social factors and health outcomes, by State (2014)");
+
     // Step 5: Create Circles
     // ==============================
     var circlesGroup = chartGroup.selectAll("circle")
@@ -287,6 +296,9 @@ d3.csv("assets/data/data.csv").then(function (data) {
 
     // updateToolTip function above csv import
     var circlesText = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+
+    // Step 6: Add event listeners
+    // ==============================
 
     // x axis labels event listener
     xlabelsGroup.selectAll("text")
@@ -347,9 +359,6 @@ d3.csv("assets/data/data.csv").then(function (data) {
                 }
             }
         });
-
-    // updateToolTip function above csv import
-    // var circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
     // y axis labels event listener
     ylabelsGroup.selectAll("text")
