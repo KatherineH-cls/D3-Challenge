@@ -8,7 +8,7 @@ var svgHeight = 500;
 var margin = {
     top: 60,
     right: 60,
-    bottom: 60,
+    bottom: 100,
     left: 60
 };
 
@@ -33,7 +33,7 @@ d3.csv("assets/data/data.csv").then(function (data) {
     // Print the data
     console.log(data);
 
-    //    // Step 1: Parse Data/Cast as numbers
+    // Step 1: Parse Data/Cast as numbers
     // ==============================
     data.forEach(function (data) {
         data.poverty = +data.poverty;
@@ -45,9 +45,9 @@ d3.csv("assets/data/data.csv").then(function (data) {
         data.stateabbr = data.abbr;
     });
 
-    console.log(data.smokes);
 
-        // Step 2: Create scale functions
+
+    // Step 2: Create scale functions
     // ==============================
     var xScale = d3.scaleLinear()
         .domain(d3.extent(data, d => d.poverty)).nice()
@@ -73,6 +73,34 @@ d3.csv("assets/data/data.csv").then(function (data) {
         .attr("transform", "translate(0, " + chartHeight + ")")
         .call(bottomAxis);
 
+    // Add xaxis labels to the chart
+    // ==============================
+    var xlabelsGroup = chartGroup.append("g")
+        .attr("transform", `translate(${chartWidth / 2}, ${chartHeight + 20})`);
+
+    var povertyLabel = xlabelsGroup.append("text")
+        .attr("x", 0)
+        .attr("y", 20)
+        .attr("value", "poverty") // value to grab for event listener
+        .classed("active", true)
+        .text("In Poverty (%)");
+
+    var ageLabel = xlabelsGroup.append("text")
+        .attr("x", 0)
+        .attr("y", 40)
+        .attr("value", "age") // value to grab for event listener
+        .classed("inactive", true)
+        .text("Age (Median)");
+
+    var incomeLabel = xlabelsGroup.append("text")
+        .attr("x", 0)
+        .attr("y", 60)
+        .attr("value", "income") // value to grab for event listener
+        .classed("inactive", true)
+        .text("Household income (median)");
+
+
+
     // Step 5: Create Circles
     // ==============================
     var circlesGroup = chartGroup.selectAll("circle")
@@ -86,7 +114,8 @@ d3.csv("assets/data/data.csv").then(function (data) {
         .attr("opacity", ".5")
         ;
 
-    var circlestext = chartGroup.selectAll("label")
+    // add state labels to circles
+    var circlestext = chartGroup.selectAll(".st_label")
         .data(data)
         .enter()
         .append("text")
@@ -94,6 +123,7 @@ d3.csv("assets/data/data.csv").then(function (data) {
         .attr("y", d => yScale(d.healthcare))
         .attr("text-anchor", "middle")
         .attr("alignment-baseline", "central")
+        .attr("fill", "azure")
         .text(d => d.stateabbr);
 
     //     const label = svg.append("g")
