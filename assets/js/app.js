@@ -78,7 +78,7 @@ function renderCircles(circlesGroup,
 
     return circlesGroup;
 }
-
+// function used for updating circles text location when circles move
 function renderText(circlesText,
     xScale, chosenXAxis,
     yScale, chosenYAxis) {
@@ -89,6 +89,55 @@ function renderText(circlesText,
         .attr("y", d => yScale(d[chosenYAxis]));
 
     return circlesText;
+}
+
+// function used for updating circles group with new tooltip
+function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
+
+    var xlabel;
+    if (chosenXAxis === "poverty") {
+        xlabel = "Poverty (%):";
+    }
+    else if (chosenXAxis === "age") {
+        xlabel = "Age: ";
+    }
+    else if (chosenXAxis === "income") {
+        xlabel = "Income: ";
+    }
+    else xlabel = "No data";
+
+    var ylabel;
+    if (chosenYAxis === "obesity") {
+        ylabel = "Obesity:";
+    }
+    else if (chosenYAxis === "smokes") {
+        ylabel = "Smokers: ";
+    }
+    else if (chosenYAxis === "healthcare") {
+        ylabel = "Lacks Healthcare: ";
+    }
+    else ylabel = "no data";
+
+    var toolTip = d3.tip()
+        .attr("class", "tooltip")
+        .offset([80, -60])
+        .html(function (d) {
+            return (`${d.state}
+            <br>${xlabel} ${d[chosenXAxis]}
+            <br>${ylabel} ${d[chosenYAxis]} %`);
+        });
+
+    circlesGroup.call(toolTip);
+
+    circlesGroup.on("mouseover", function(data) {
+        toolTip.show(data);
+      })
+        // onmouseout event
+        .on("mouseout", function(data, index) {
+          toolTip.hide(data);
+        });
+
+    return circlesGroup;
 }
 
 // Fetch data and draw the graph
@@ -114,6 +163,7 @@ d3.csv("assets/data/data.csv").then(function (data) {
         data.income = +data.income;
         data.smokes = +data.smokes;
         data.stateabbr = data.abbr;
+        data.state = data.state;
     });
 
     // Step 2: Create scale functions
@@ -218,6 +268,19 @@ d3.csv("assets/data/data.csv").then(function (data) {
         .attr("fill", "azure")
         .text(d => d.stateabbr);
 
+    // add tool tips to chart
+    // ==============================
+    // tip = d3.tip().attr('class', 'd3-tip').html(function(d) { return d; });
+    // circlesGroup.call(tip);
+    // circlesGroup.selectAll("circles")
+    //     .data(data)
+    //     .enter()
+        // .on("mouseover", tip.show)
+        // .on("mouseout", tip.hide)
+
+        // updateToolTip function above csv import
+  var circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+
     // x axis labels event listener
     xlabelsGroup.selectAll("text")
         .on("click", function () {
@@ -277,6 +340,9 @@ d3.csv("assets/data/data.csv").then(function (data) {
                 }
             }
         });
+
+    // updateToolTip function above csv import
+    // var circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
     // y axis labels event listener
     ylabelsGroup.selectAll("text")
