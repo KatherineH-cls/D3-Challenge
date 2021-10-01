@@ -234,6 +234,44 @@ d3.csv("assets/data/data.csv").then(function (data) {
             }
         });
 
+        // x axis labels event listener
+    ylabelsGroup.selectAll("text")
+    .on("click", function () {
+        // get value of selection
+        var value = d3.select(this).attr("value");
+        if (value !== chosenYAxis) {
+            // replaces chosenXAxis with value
+            chosenYAxis = value;
+            console.log(chosenYAxis)
+            // updates x scale for new data
+            yScale = yLinearScale(data, chosenYAxis);
+            // updates x axis with transition
+            yAxis = renderAxesY(yScale, yAxis);
+            // updates circles with new x values
+            // circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis);
+            // updates tooltips with new info
+            // circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+
+            // changes classes to change bold text
+            // if (chosenXAxis === "num_albums") {
+            //   albumsLabel
+            //     .classed("active", true)
+            //     .classed("inactive", false);
+            //   hairLengthLabel
+            //     .classed("active", false)
+            //     .classed("inactive", true);
+            // }
+            // else {
+            //   albumsLabel
+            //     .classed("active", false)
+            //     .classed("inactive", true);
+            //   hairLengthLabel
+            //     .classed("active", true)
+            //     .classed("inactive", false);
+            // }
+        }
+    });
+
 }).catch(function (error) {
     console.log(error);
 });
