@@ -9,7 +9,7 @@ var margin = {
     top: 60,
     right: 60,
     bottom: 100,
-    left: 60
+    left: 100
 };
 
 // Define dimensions of the chart area
@@ -99,7 +99,33 @@ d3.csv("assets/data/data.csv").then(function (data) {
         .classed("inactive", true)
         .text("Household income (median)");
 
+    // Add yaxis labels to the chart
+    // ==============================
+    var ylabelsGroup = chartGroup.append("g")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -chartHeight / 2)
+        ;
 
+    var obeseLabel = ylabelsGroup.append("text")
+        .attr("x", -chartHeight / 2)
+        .attr("y", -70)
+        .attr("value", "obese") // value to grab for event listener
+        .classed("active", true)
+        .text("Obese (%)");
+
+    var smokesLabel = ylabelsGroup.append("text")
+        .attr("x", -chartHeight / 2)
+        .attr("y", -50)
+        .attr("value", "smokes") // value to grab for event listener
+        .classed("inactive", true)
+        .text("Smokes (%)");
+
+    var healthcareLabel = ylabelsGroup.append("text")
+        .attr("x", -chartHeight / 2)
+        .attr("y", -30)
+        .attr("value", "healthcare") // value to grab for event listener
+        .classed("inactive", true)
+        .text("Lacks Healthcare (%)");
 
     // Step 5: Create Circles
     // ==============================
