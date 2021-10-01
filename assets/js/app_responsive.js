@@ -1,13 +1,13 @@
 // @TODO: YOUR CODE HERE!
-function makeResponsive() {
+// function makeResponsive() {
 
     // if the SVG area isn't empty when the browser loads,
     // remove it and replace it with a resized version of the chart
-  var svgArea = d3.select("body").select("svg");
+//   var svgArea = d3.select("body").select("svg");
 
-  if (!svgArea.empty()) {
-    svgArea.remove();
-  }
+//   if (!svgArea.empty()) {
+//     svgArea.remove();
+//   }
 
 // Define SVG area dimensions
 var svgWidth = parseInt(d3.select("#scatter").style("width"), 10);
@@ -268,6 +268,15 @@ d3.csv("assets/data/data.csv").then(function (data) {
         .classed("active", true)
         .text("Lacks Healthcare (%)");
 
+    // Add title to the chart
+    // ==============================
+    // chartGroup.append("text")
+    //     .attr("x", (chartWidth / 2))
+    //     .attr("y", 0 - (margin.top / 2))
+    //     .attr("text-anchor", "middle")
+    //     .style("font-size", "14px")
+    //     .text("Relationship between social factors and health outcomes, by State (2014)")
+    //     ;
 
     // Step 5: Create Circles
     // ==============================
@@ -296,7 +305,7 @@ d3.csv("assets/data/data.csv").then(function (data) {
         .text(d => d.stateabbr);
 
     // updateToolTip function above csv import
-    circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+    var circlesText = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
     // Step 6: Add event listeners
     // ==============================
@@ -309,6 +318,7 @@ d3.csv("assets/data/data.csv").then(function (data) {
             if (value !== chosenXAxis) {
                 // replaces chosenXAxis with value
                 chosenXAxis = value;
+                console.log(chosenXAxis)
                 // updates x scale for new data
                 xScale = xLinearScale(data, chosenXAxis);
                 // updates x axis with transition
@@ -424,10 +434,10 @@ d3.csv("assets/data/data.csv").then(function (data) {
     console.log(error);
 });
 
-}
+// }
 
-makeResponsive();
+// makeResponsive();
 
-// Event listener for window resize.
-// When the browser window is resized, makeResponsive() is called.
-d3.select(window).on("resize", makeResponsive);
+// // Event listener for window resize.
+// // When the browser window is resized, makeResponsive() is called.
+// d3.select(window).on("resize", makeResponsive);
